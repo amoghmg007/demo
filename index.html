@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PayGuard OS — Live Demo</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #080a09;
+      --surface: #0f1310;
+      --border: rgba(255, 255, 255, 0.07);
+      --text: #e8ede9;
+      --muted: #6b7a70;
+      --accent: #ffffff;
+      --red: #ef4444;
+      --green: #22c55e;
+      --blue: #3b82f6;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 36px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .badge span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.4) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+      font-weight: 300;
+    }
+
+    .stats {
+      display: flex;
+      gap: 48px;
+      margin-bottom: 64px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-val {
+      font-size: 28px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .scroll-hint {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      animation: bounce 2s infinite;
+    }
+
+    .scroll-arrow {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(6px);
+      }
+    }
+
+    /* Sections */
+    .section {
+      padding: 100px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+      max-width: 560px;
+      margin-bottom: 48px;
+      font-weight: 300;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin: 0;
+    }
+
+    /* Screenshot cards */
+    .screen-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      cursor: default;
+    }
+
+    .screen-card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-4px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    .screen-card img {
+      width: 100%;
+      display: block;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .screen-card-body {
+      padding: 24px;
+    }
+
+    .screen-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .screen-card-body h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .screen-card-body p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .grid-1 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .col-span-2 {
+      grid-column: span 2;
+    }
+
+    /* Feature pills */
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 64px;
+    }
+
+    .feature-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 13px;
+    }
+
+    .feature-pill .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .dot-red {
+      background: var(--red);
+    }
+
+    .dot-green {
+      background: var(--green);
+    }
+
+    .dot-blue {
+      background: var(--blue);
+    }
+
+    .dot-white {
+      background: white;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 60px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer span {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      cursor: zoom-out;
+    }
+
+    .lightbox.active {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-width: 95vw;
+      max-height: 92vh;
+      border-radius: 12px;
+      object-fit: contain;
+    }
+
+    .screen-card img {
+      cursor: zoom-in;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" src="" alt="Preview" />
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="badge"><span></span> Live Demo — PayGuard OS v2.0.4-beta</div>
+    <h1>From Scam to<br /><em>Structured Recovery</em></h1>
+    <p>AI-powered fraud intelligence engine. Drop evidence, get a recovery plan, generate legal documents — in seconds.
+    </p>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-val" style="color:#22c55e">59%</div>
+        <div class="stat-label">Recovery Probability</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">4</div>
+        <div class="stat-label">Dashboard Tabs</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" style="color:#3b82f6">SHA-256</div>
+        <div class="stat-label">Legal Hash Integrity</div>
+      </div>
+    </div>
+    <div class="features">
+      <div class="feature-pill">
+        <div class="dot dot-white"></div>AI Evidence Extraction
+      </div>
+      <div class="feature-pill">
+        <div class="dot dot-red"></div>Live Risk Probability
+      </div>
+      <div class="feature-pill">
+        <div class="dot dot-green"></div>Signal Intelligence Mapping
+      </div>
+      <div class="feature-pill">
+        <div class="dot dot-blue"></div>Production OS Execution
+      </div>
+      <div class="feature-pill">
+        <div class="dot dot-white"></div>Cryptographic Legal Package
+      </div>
+      <div class="feature-pill">
+        <div class="dot dot-red"></div>Bank Dispute Notice (RBI)
+      </div>
+      <div class="feature-pill">
+        <div class="dot dot-green"></div>Police / Cyber Cell FIR
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <div class="scroll-arrow">↓</div>
+      Scroll to explore demo
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Landing Page -->
+  <div class="section">
+    <div class="section-label">Step 01 — Entry Point</div>
+    <div class="section-title">Landing Page</div>
+    <div class="section-desc">The hero screen greets fraud victims with a clean, focused interface. Floating nodes
+      visualize the system's modules: Trace Logic, Bank API, Legal Pack, and Dispute Engine.</div>
+    <div class="grid-1">
+      <div class="screen-card">
+        <img
+          src="C:\Users\Thejaswi A\.gemini\antigravity\brain\71874fc5-d97a-4131-ba55-7132cc1ec1de\.system_generated\click_feedback\click_feedback_1777391962413.png"
+          alt="Landing Page" onclick="openLightbox(this.src)" />
+        <div class="screen-card-body">
+          <div class="screen-tag">● Landing Page</div>
+          <h3>"From Scam to Structured Recovery"</h3>
+          <p>Hero section with animated node graph showing system modules. Two CTAs: "Open App" and "Start Extraction".
+            Partner logos bar at bottom.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Overview Tab -->
+  <div class="section">
+    <div class="section-label">Step 02 — Analysis Dashboard</div>
+    <div class="section-title">Overview Tab</div>
+    <div class="section-desc">After submitting fraud evidence text, the AI extracts all entities and runs the risk
+      engine. The dashboard displays extracted data and a live recovery probability score.</div>
+    <div class="grid-1">
+      <div class="screen-card">
+        <img
+          src="C:\Users\Thejaswi A\.gemini\antigravity\brain\71874fc5-d97a-4131-ba55-7132cc1ec1de\.system_generated\click_feedback\click_feedback_1777393188415.png"
+          alt="Overview Tab" onclick="openLightbox(this.src)" />
+        <div class="screen-card-body">
+          <div class="screen-tag">● Tab 1 — Overview</div>
+          <h3>System Extracted Entities + Live Target Probability</h3>
+          <p>Shows: Amount ₹45,000 INR · Platform: PhonePe · Destination Account: 9876543210 · Fraud Vector · Recovery
+            Probability: 59% · Estimated Loss Finality: HIGH · Auditable Explainability reasoning core.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Intelligence Tab -->
+  <div class="section">
+    <div class="section-label">Step 03 — Threat Intelligence</div>
+    <div class="section-title">Intelligence Tab</div>
+    <div class="section-desc">Signal Intelligence Mapping surfaces deterministic fraud attributes extracted by local ML
+      engines. Each signal carries a severity badge, confidence level, and source attribution.</div>
+    <div class="grid-2">
+      <div class="screen-card col-span-2">
+        <img
+          src="C:\Users\Thejaswi A\.gemini\antigravity\brain\71874fc5-d97a-4131-ba55-7132cc1ec1de\.system_generated\click_feedback\click_feedback_1777393212207.png"
+          alt="Intelligence Tab" onclick="openLightbox(this.src)" />
+        <div class="screen-card-body">
+          <div class="screen-tag">● Tab 2 — Intelligence</div>
+          <h3>Signal Intelligence Mapping</h3>
+          <p>Detected signals include: SOCIAL_ENGINEERING (HIGH, 88% confidence) · DOMAIN_AGE (HIGH, 95% confidence) ·
+            PAYMENT_PATTERN velocity spike (MEDIUM, 82% confidence). All mapped to ML-EXT-01 source engine.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Recovery/Execution Tab -->
+  <div class="section">
+    <div class="section-label">Step 04 — Execution Engine</div>
+    <div class="section-title">Recovery / Execution Tab</div>
+    <div class="section-desc">The OS Execution routing pipeline. Authorize the plan to trigger async actions: bank
+      escalation, UTR collection, UPI reversal, internal ops escalation, and regulatory complaint filing.</div>
+    <div class="grid-2">
+      <div class="screen-card">
+        <img
+          src="C:\Users\Thejaswi A\.gemini\antigravity\brain\71874fc5-d97a-4131-ba55-7132cc1ec1de\.system_generated\click_feedback\click_feedback_1777393278808.png"
+          alt="Authorize Execution" onclick="openLightbox(this.src)" />
+        <div class="screen-card-body">
+          <div class="screen-tag">● Tab 3 — Execution (Pre-Auth)</div>
+          <h3>Authorize Execution</h3>
+          <p>Execution steps: INITIATE_BANK_ESCALATION · COLLECT_UTR · UPI_REVERSAL · ESCALATE_INTERNAL_OPS ·
+            FILE_REGULATORY_COMPLAINT. Environment: LIVE PRODUCTION. Mode: ASSISTED.</p>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img
+          src="C:\Users\Thejaswi A\.gemini\antigravity\brain\71874fc5-d97a-4131-ba55-7132cc1ec1de\.system_generated\click_feedback\click_feedback_1777393293930.png"
+          alt="Target Authorized" onclick="openLightbox(this.src)" />
+        <div class="screen-card-body">
+          <div class="screen-tag">● Tab 3 — Execution (Post-Auth)</div>
+          <h3>TARGET AUTHORIZED</h3>
+          <p>After clicking AUTHORIZE EXECUTION, the button switches to "TARGET AUTHORIZED" (green pulsing state). The
+            async pipeline is queued to execute all recovery actions via PayGuard API Engine · Direct Routing Socket.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Evidence Tab -->
+  <div class="section">
+    <div class="section-label">Step 05 — Legal Documents</div>
+    <div class="section-title">Evidence Tab</div>
+    <div class="section-desc">Cryptographically hashed legal artifacts generated automatically. Two documents ready for
+      download: a Bank Dispute Notice (per RBI guidelines) and a Police/Cyber Cell FIR draft.</div>
+    <div class="grid-1">
+      <div class="screen-card">
+        <img
+          src="C:\Users\Thejaswi A\.gemini\antigravity\brain\71874fc5-d97a-4131-ba55-7132cc1ec1de\.system_generated\click_feedback\click_feedback_1777393319141.png"
+          alt="Evidence Tab" onclick="openLightbox(this.src)" />
+        <div class="screen-card-body">
+          <div class="screen-tag">● Tab 4 — Evidence</div>
+          <h3>Cryptographic Legal Package</h3>
+          <p>Deterministic Legal Strength: 4.2/10 · Evidence Score: Low · Timeline Matrix: Strong · UTR Extraction:
+            Missing. Bank Dispute Notice (SHA-256: d28cb23da364ee5429...) + Police / Cyber Cell FIR (Sec 420, 66D IT Act
+            · SHA-256: b330efaad4588c8a49...). Both downloadable as PDF.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- System Info -->
+  <div class="section" style="padding-top:80px;padding-bottom:80px;">
+    <div class="section-label">System</div>
+    <div class="section-title">Architecture Overview</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px;">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;">
+        <div
+          style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.1em;">
+          Frontend</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px;">React + Vite</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6;">Framer Motion animations · TailwindCSS · Lucide
+          Icons · 3 core components</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;">
+        <div
+          style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.1em;">
+          Backend</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px;">FastAPI + Python</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6;">AI Extractor · Risk Engine · Legal Compiler ·
+          ARDG Engine · Action Registry</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;">
+        <div
+          style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.1em;">
+          AI / APIs</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px;">Gemini + Groq</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6;">Entity extraction · Risk scoring · Legal
+          document generation · PDF artifacts</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>PayGuard OS &nbsp;·&nbsp; <span>v2.0.4-beta</span> &nbsp;·&nbsp; Demo recorded live at
+      <span>127.0.0.1:8000</span></p>
+    <p style="margin-top:8px;">Built with FastAPI · React · Gemini AI &nbsp;·&nbsp; All documents SHA-256 verified</p>
+  </footer>
+
+  <script>
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').classList.add('active');
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+  </script>
+</body>
+
+</html>
